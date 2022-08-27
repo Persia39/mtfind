@@ -21,6 +21,8 @@ void FileWrapper::OutputAllUsageOfString(std::string substring, std::ostream &os
 
     readerThread.join();
     handlerThread.join();
+
+    _firstThreadIsFinished.store(false, std::memory_order_relaxed);
 }
 
 void FileWrapper::ReadFromFile() {
@@ -61,7 +63,7 @@ void FileWrapper::FindAndOutputSubstringInLines(std::string &substring, std::ost
             }
         }
     }
-
+    os << findings.size() << std::endl;
     for (const auto&[pair, str]: findings)
         os << pair.first << " " << pair.second << " " << str << std::endl;
 }
