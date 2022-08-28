@@ -20,7 +20,7 @@ public:
 
 private:
     void ReadFromFile();
-    void FindAndOutputSubstringInLines(std::string &substring, std::ostream &os);
+    void FindAndOutputSubstringInLines(const std::string &substring, std::ostream &os);
 
     void PushLineToQueue(const uint64_t index, const std::string &str);
     std::optional<PairIndexString> PopLineFromQueue();

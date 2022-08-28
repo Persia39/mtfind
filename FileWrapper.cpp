@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include <thread>
+#include <unordered_set>
 #include <regex>
 
 
@@ -45,11 +46,22 @@ void FileWrapper::ReadFromFile() {
     _firstThreadIsFinished.store(true, std::memory_order_relaxed);
 }
 
-void FileWrapper::FindAndOutputSubstringInLines(std::string &substring, std::ostream &os) {
-    std::replace(substring.begin(), substring.end(), '?', '.');
+void FileWrapper::FindAndOutputSubstringInLines(const std::string &substring, std::ostream &os) {
+    std::unordered_set<char> special_symbols = {'.', '^', '$', '*', '+', '{', '[', ']', '\\', '|', '(', ')'};
+    std::string regex_string;
+    for (auto& elem : substring)
+    {
+        if (special_symbols.find(elem) == std::end(special_symbols))
+            regex_string.push_back(elem);
+        else{
+            regex_string.push_back('\\');
+            regex_string.push_back(elem);
+        }
+    }
+    std::replace(std::begin(regex_string), std::end(regex_string), '?', '.');
 
     std::map<std::pair<uint64_t, uint64_t>, std::string> findings;
-    auto regex = std::regex(substring);
+    auto regex = std::regex(regex_string);
 
     while (!_firstThreadIsFinished.load(std::memory_order_relaxed) || !QueueIsEmpty()) {
         const auto opt_pair = PopLineFromQueue();
