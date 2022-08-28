@@ -9,8 +9,8 @@ void QueueThreadWrapper<T>::Push(const T &value) {
 template<typename T>
 T QueueThreadWrapper<T>::Pop() {
     const std::lock_guard<std::mutex> lock(_mutex);
-    auto back_value {_queue.front()};
+    auto front_value {_queue.front()};
     _queue.pop();
 
-    return back_value;
+    return front_value;
 }

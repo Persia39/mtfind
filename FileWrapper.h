@@ -1,11 +1,10 @@
 #ifndef MTFIND_FILEWRAPPER_H
 #define MTFIND_FILEWRAPPER_H
 
+#include "QueueThreadWrapper.h"
 #include <optional>
 #include <queue>
 #include <string>
-
-#include "QueueThreadWrapper.h"
 
 enum class EncodingType : uint8_t {
     ASCII = 0,
@@ -17,7 +16,7 @@ public:
 
     explicit FileWrapper(std::string &path, EncodingType type = EncodingType::ASCII);
 
-    void OutputAllUsageOfString(std::string substring, std::ostream &os);
+    void OutputAllUsageOfString(std::string &substring, std::ostream &os);
 
 private:
     void ReadFromFile();
@@ -25,12 +24,12 @@ private:
 
     void PushLineToQueue(const uint64_t index, const std::string &str);
     std::optional<PairIndexString> PopLineFromQueue();
-    bool QueueIsEmpty(){return _queueOfLines.IsEmpty();}
+    bool QueueIsEmpty() const {return _queueOfLines.IsEmpty();}
 
     std::string _path;
     EncodingType _encodingType;
     QueueThreadWrapper<PairIndexString> _queueOfLines;
-    std::atomic<bool> _firstThreadIsFinished{false};
+    std::atomic<bool> _firstThreadIsFinished;
 };
 
 #endif //MTFIND_FILEWRAPPER_H

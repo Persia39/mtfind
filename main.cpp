@@ -1,6 +1,5 @@
-#include <iostream>
 #include "FileWrapper.h"
-
+#include <iostream>
 
 int main(int argc, char *argv[]) {
     if (argc != 3) {

@@ -7,9 +7,10 @@
 #include <regex>
 
 
-FileWrapper::FileWrapper(std::string &path, EncodingType encodingType) : _path(path), _encodingType(encodingType) {}
+FileWrapper::FileWrapper(std::string &path, EncodingType encodingType) : _path(path), _encodingType(encodingType),
+                                                                         _firstThreadIsFinished(false) {}
 
-void FileWrapper::OutputAllUsageOfString(std::string substring, std::ostream &os) {
+void FileWrapper::OutputAllUsageOfString(std::string &substring, std::ostream &os) {
 
     if (!std::filesystem::exists(_path)) {
         std::cerr << "File '" << _path << "' doesn't exist" << std::endl;
@@ -26,7 +27,7 @@ void FileWrapper::OutputAllUsageOfString(std::string substring, std::ostream &os
 }
 
 void FileWrapper::ReadFromFile() {
-    if (_encodingType != EncodingType::ASCII){
+    if (_encodingType != EncodingType::ASCII) {
         return;
     }
 
@@ -54,8 +55,9 @@ void FileWrapper::FindAndOutputSubstringInLines(std::string &substring, std::ost
         const auto opt_pair = PopLineFromQueue();
         if (opt_pair.has_value()) {
             const std::string &current_line = opt_pair.value().second;
-            const uint64_t index_line = opt_pair.value().first;
-            for (std::sregex_iterator iter = std::sregex_iterator(std::begin(current_line), std::end(current_line), regex);
+            const uint64_t &index_line = opt_pair.value().first;
+            for (std::sregex_iterator iter = std::sregex_iterator(std::begin(current_line), std::end(current_line),
+                                                                  regex);
                  iter != std::sregex_iterator();
                  ++iter) {
                 std::smatch match = *iter;
